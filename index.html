@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reddit Posts</title>
+  <style>
+    /* CSS styling for the posts */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .post {
+      background-color: #252525;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .post-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #e0e0e0;
+    }
+
+    .post-author {
+      color: #999;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .post-body {
+      margin-top: 10px;
+    }
+
+    .post-body img {
+      max-width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Reddit Posts</h1>
+
+  <div id="posts-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // JavaScript code to fetch and display Reddit posts
+
+    const postsContainer = document.getElementById('posts-container');
+    let after = null;
+    let isLoading = false;
+
+    // Fetch posts from the Reddit API
+    function fetchPosts() {
+      if (isLoading) return;
+      isLoading = true;
+
+      fetch(`https://www.reddit.com/r/all.json?limit=10&after=${after || ''}`)
+        .then(response => response.json())
+        .then(data => {
+          const posts = data.data.children;
+          after = data.data.after;
+
+          // Iterate through each post and create HTML elements to display them
+          posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.classList.add('post');
+
+            const titleElement = document.createElement('h2');
+            titleElement.classList.add('post-title');
+            titleElement.textContent = post.data.title;
+
+            const authorElement = document.createElement('p');
+            authorElement.classList.add('post-author');
+            authorElement.textContent = 'Posted by: ' + post.data.author;
+
+            const contentElement = document.createElement('div');
+            contentElement.classList.add('post-body');
+            contentElement.innerHTML = marked(post.data.selftext || '');
+
+            postElement.appendChild(titleElement);
+            postElement.appendChild(authorElement);
+            postElement.appendChild(contentElement);
+
+            postsContainer.appendChild(postElement);
+          });
+
+          isLoading = false;
+        })
+        .catch(error => {
+          console.error('Error fetching Reddit posts:', error);
+          isLoading = false;
+        });
+    }
+
+    // Infinite scroll
+    window.addEventListener('scroll', () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        fetchPosts();
+      }
+    });
+
+    // Initial fetch
+    fetchPosts();
+  </script>
+</body>
+</html>
