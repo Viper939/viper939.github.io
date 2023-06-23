@@ -114,4 +114,28 @@
             }
 
             const textElement = document.createElement('p');
-            textElement.textContent = post.data
+            textElement.textContent = post.data.selftext;
+
+            contentElement.appendChild(textElement);
+
+            postElement.appendChild(titleElement);
+            postElement.appendChild(authorElement);
+            postElement.appendChild(contentElement);
+
+            postsContainer.appendChild(postElement);
+          });
+
+          isLoading = false;
+        })
+        .catch(error => {
+          console.error('Error fetching Reddit posts:', error);
+          isLoading = false;
+        });
+    }
+
+    // Bind fetchPosts() to button click event
+    const fetchButton = document.querySelector('button');
+    fetchButton.addEventListener('click', fetchPosts);
+  </script>
+</body>
+</html>
