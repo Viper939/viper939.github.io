@@ -105,26 +105,13 @@
 
             const contentElement = document.createElement('div');
             contentElement.classList.add('post-body');
-            contentElement.textContent = post.data.selftext;
 
-            postElement.appendChild(titleElement);
-            postElement.appendChild(authorElement);
-            postElement.appendChild(contentElement);
+            // Check if the post has an image
+            if (post.data.preview && post.data.preview.images[0].source.url) {
+              const imageElement = document.createElement('img');
+              imageElement.src = post.data.preview.images[0].source.url;
+              contentElement.appendChild(imageElement);
+            }
 
-            postsContainer.appendChild(postElement);
-          });
-
-          isLoading = false;
-        })
-        .catch(error => {
-          console.error('Error fetching Reddit posts:', error);
-          isLoading = false;
-        });
-    }
-
-    // Bind fetchPosts() to button click event
-    const fetchButton = document.querySelector('button');
-    fetchButton.addEventListener('click', fetchPosts);
-  </script>
-</body>
-</html>
+            const textElement = document.createElement('p');
+            textElement.textContent = post.data
