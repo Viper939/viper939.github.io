@@ -17,6 +17,16 @@
       margin-bottom: 20px;
     }
 
+    .subreddit-input {
+      margin-bottom: 20px;
+    }
+
+    .subreddit-input input {
+      width: 200px;
+      padding: 5px;
+      font-size: 14px;
+    }
+
     .post {
       background-color: #252525;
       border-radius: 6px;
@@ -51,21 +61,30 @@
 <body>
   <h1>Reddit Posts</h1>
 
+  <div class="subreddit-input">
+    <input type="text" id="subreddit-input" placeholder="Enter subreddit name">
+    <button onclick="fetchPosts()">Fetch Posts</button>
+  </div>
+
   <div id="posts-container"></div>
 
   <script>
     // JavaScript code to fetch and display Reddit posts
 
+    const subredditInput = document.getElementById('subreddit-input');
     const postsContainer = document.getElementById('posts-container');
     let after = null;
     let isLoading = false;
 
     // Fetch posts from the Reddit API
     function fetchPosts() {
-      if (isLoading) return;
-      isLoading = true;
+      const subreddit = subredditInput.value.trim();
+      if (!subreddit || isLoading) return;
 
-      fetch(`https://www.reddit.com/r/all.json?limit=10&after=${after || ''}`)
+      isLoading = true;
+      postsContainer.innerHTML = '';
+
+      fetch(`https://www.reddit.com/r/${subreddit}/.json?limit=10&after=${after || ''}`)
         .then(response => response.json())
         .then(data => {
           const posts = data.data.children;
@@ -86,7 +105,7 @@
 
             const contentElement = document.createElement('div');
             contentElement.classList.add('post-body');
-            contentElement.innerHTML = post.data.selftext_html;
+            contentElement.textContent = post.data.selftext;
 
             postElement.appendChild(titleElement);
             postElement.appendChild(authorElement);
@@ -102,16 +121,3 @@
           isLoading = false;
         });
     }
-
-    // Infinite scroll
-    window.addEventListener('scroll', () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        fetchPosts();
-      }
-    });
-
-    // Initial fetch
-    fetchPosts();
-  </script>
-</body>
-</html>
