@@ -108,8 +108,11 @@
 
             // Check if the post has an image
             if (post.data.preview && post.data.preview.images[0].source.url) {
+              const imageUrl = post.data.preview.images[0].source.url;
+              const proxyUrl = `https://your-proxy-server.com?url=${encodeURIComponent(imageUrl)}`;
+
               const imageElement = document.createElement('img');
-              imageElement.src = post.data.preview.images[0].source.url;
+              imageElement.src = proxyUrl;
               contentElement.appendChild(imageElement);
             }
 
