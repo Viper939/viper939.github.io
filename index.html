@@ -87,7 +87,7 @@
 
             const contentElement = document.createElement('div');
             contentElement.classList.add('post-body');
-            contentElement.innerHTML = marked(post.data.selftext || '');
+            contentElement.innerHTML = marked(post.data.selftext_html || '');
 
             postElement.appendChild(titleElement);
             postElement.appendChild(authorElement);
