@@ -53,7 +53,6 @@
 
   <div id="posts-container"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     // JavaScript code to fetch and display Reddit posts
 
@@ -87,7 +86,7 @@
 
             const contentElement = document.createElement('div');
             contentElement.classList.add('post-body');
-            contentElement.innerHTML = marked(post.data.selftext_html || '');
+            contentElement.innerHTML = post.data.selftext_html;
 
             postElement.appendChild(titleElement);
             postElement.appendChild(authorElement);
